@@ -86,9 +86,9 @@ do
     if [ $Rodar -eq 1 ];then
 
         if echo "$arquivo" | grep -q "\.Trash-1000"; then
-            if [ "$evento" = "MODIFY" ]; then
+            # if [ "$evento" = "MODIFY" ]; then
 
-                if [ -e "$arquivo" ]; then
+            #     if [ -e "$arquivo" ]; then
 
                     echo -----------------------------------------------------------------------
                     echo ====================================================================
@@ -96,42 +96,42 @@ do
                     echo Arquivos do google drive são movidos para a pasta : $endLixeira
                     echo ====================================================================
 
-                    conteudo="ler"
+            #         conteudo="ler"
 
-                    conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
+            #         conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
 
-                    endnoDrive="$pasta_destino/$conteudo"
-                    caminho_lixo="$endLixeira/$conteudo"
+            #         endnoDrive="$pasta_destino/$conteudo"
+            #         caminho_lixo="$endLixeira/$conteudo"
 
-                    if [ -f "$endnoDrive" ];then
-                        if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                            mkdir -p "$(dirname "$caminho_lixo")"
-                        fi
+            #         if [ -f "$endnoDrive" ];then
+            #             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+            #                 mkdir -p "$(dirname "$caminho_lixo")"
+            #             fi
 
-                        rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+            #             rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
 
-                    else
+            #         else
 
-                        if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                            mkdir -p "$(dirname "$caminho_lixo")"
-                        fi
+            #             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+            #                 mkdir -p "$(dirname "$caminho_lixo")"
+            #             fi
 
-                        if [[ ! "$endnoDrive" == */ ]]; then
-                            endnoDrive="$endnoDrive/"
-                        fi
+            #             if [[ ! "$endnoDrive" == */ ]]; then
+            #                 endnoDrive="$endnoDrive/"
+            #             fi
 
-                        echo ----------------------------------------------------
-                        echo Movendo
-                        echo de: "$endnoDrive"*
-                        echo pr: "$caminho_lixo"
-                        echo ----------------------------------------------------
+            #             echo ----------------------------------------------------
+            #             echo Movendo
+            #             echo de: "$endnoDrive"*
+            #             echo pr: "$caminho_lixo"
+            #             echo ----------------------------------------------------
 
-                        rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+            #             rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
 
-                        ApagarPasta "$endnoDrive" &
-                    fi
-                fi
-            fi
+            #             ApagarPasta "$endnoDrive" &
+            #         fi
+            #     fi
+            # fi
         else
 
             if echo "$arquivo" | grep -q ".part"; then

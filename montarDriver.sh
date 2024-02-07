@@ -66,7 +66,7 @@ else
 fi
 
 sleep 5
-bash ativarmonitor.sh > /dev/null &
+bash ativarmonitor.sh
 sleep 5
 monitorRodando=$(ps -aux | grep inotifywait | grep "$pastahd")
 
