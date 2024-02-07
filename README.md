@@ -1,2 +1,55 @@
-# BashScript-sync-hd-google-drive
- Script em Bash para monitorar e sincronizar arquivos entre uma pasta local e o Google Drive usando o Rclone.
+# Scripts de Monitoramento e Sincronização de Arquivos
+
+Este conjunto de scripts em Bash permite monitorar, sincronizar e realizar operações de cópia entre uma pasta local e um diretório no Google Drive utilizando o Rclone. Os scripts são projetados para serem executados em sistemas Linux.
+
+## Requisitos
+
+Antes de executar os scripts, verifique se você tem os seguintes requisitos:
+
+- Bash
+- Rclone configurado corretamente para acessar sua conta do Google Drive
+- inotify-tools instalado no sistema (`sudo apt install inotify-tools`)
+
+## Uso
+
+1. Clone este repositório em seu sistema:
+
+   ```bash
+   git clone https://github.com/ssSistemas/BashScript-sync-hd-google-drive
+   cd sync-monitor-script
+Configure o arquivo monitor.conf com as variáveis necessárias, como descrito abaixo.
+
+Execute os scripts conforme necessário.
+
+Descrição dos Scripts
+ativarmonitor.sh: Este script monitora a pasta local e sincroniza automaticamente os arquivos com o Google Drive. Ele também move os arquivos excluídos localmente para uma pasta de lixo no Google Drive.
+
+montarDrive.sh: Este script monta a partição local e o Google Drive especificados no arquivo de configuração monitor.conf. Ele também inicia o monitoramento da pasta local.
+
+copiarTodoDriver.sh: Este script realiza uma cópia do servidor Google Drive para a pasta local.
+
+atualizarTodoDriver.sh: Este script realiza uma cópia de todos os arquivos da pasta local para o servidor Google Drive.
+
+Arquivo de Configuração (monitor.conf)
+O arquivo monitor.conf contém as seguintes variáveis de configuração:
+
+enderecoFisico: Endereço físico da partição local.
+enderecoHD: Endereço da pasta a ser montada como a partição local.
+pastahd: Nome da pasta montada como a partição local.
+servidorRclone: Configuração de acesso Rclone para o Google Drive.
+enderecoDriver: Pasta montada do Google Drive.
+Contribuindo
+Se você deseja contribuir com este projeto, siga estas etapas:
+
+Faça um fork do projeto.
+Crie uma nova branch (git checkout -b feature/nova-funcionalidade).
+Faça commit das suas alterações (git commit -am 'Adicionando uma nova funcionalidade').
+Faça push para a branch (git push origin feature/nova-funcionalidade).
+Abra um Pull Request.
+Licença
+Este projeto está licenciado sob a Licença MIT.
+
+Contato
+Se você tiver alguma dúvida ou sugestão, entre em contato:
+
+Seu Nome - rodrigodominguessilva@gmail.com

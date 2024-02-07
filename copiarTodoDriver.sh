@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Verificar se o script está sendo executado com o Bash
+if [ -z "$BASH" ]; then
+    echo "Este script requer o Bash para execução. Por favor, execute com bash."
+    echo Exemplo:
+    echo bash copiarTodoDriver.sh
+    exit 1
+fi
+
+
+caminho_arquivo_conf="monitor.conf"
+
+# Verificar se o arquivo existe
+if [ -e "$caminho_arquivo_conf" ]; then
+    # Carregar as variáveis do arquivo de configuração
+    source "$caminho_arquivo_conf"
+else
+    # Exibir mensagem de erro e sair do script
+    echo "Erro: O arquivo de configuração não foi encontrado: $caminho_arquivo_conf"
+    exit 1
+fi
+
+echo Iniciando copia do servidor google drive de configurado no rclone com nome: $servidorRclone
+echo para ao local: $enderecoHD
+rclone sync --transfers 2 --checkers 3 --checksum "$servidorRclone": "$enderecoHD"
