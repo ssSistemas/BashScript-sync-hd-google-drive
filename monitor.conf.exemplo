@@ -1,5 +1,4 @@
 enderecoFisico=/dev/sda3
 enderecoHD=/media/rodrigo/b37ebd40-869f-47a8-a068-84cb5ca89d68
-pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
 servidorRclone=googledrive
 enderecoDriver=/home/rodrigo/driver

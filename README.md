@@ -6,7 +6,7 @@ Este conjunto de scripts em Bash permite monitorar, sincronizar e realizar opera
 
 Antes de executar os scripts, verifique se você tem os seguintes requisitos:
 
-- Bash
+- Bash 5.2 ou superior
 - Rclone configurado corretamente para acessar sua conta do Google Drive
 - inotify-tools instalado no sistema (`sudo apt install inotify-tools`)
 
@@ -45,6 +45,15 @@ Configure o arquivo monitor.conf com as variáveis necessárias, como descrito a
 ###### servidorRclone: Configuração de acesso Rclone para o Google Drive.
 
 ###### enderecoDriver: Pasta montada do Google Drive.
+
+##### Exemplo Arquivo de Configuração
+
+``
+enderecoFisico=/dev/sda3
+enderecoHD=/media/rodrigo/b37ebd40-869f-47a8-a068-84cb5ca89d68
+servidorRclone=googledrive
+enderecoDriver=/home/rodrigo/driver
+``
 
 # Contribuindo
 

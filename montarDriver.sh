@@ -20,6 +20,8 @@ else
     exit 1
 fi
 
+pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
+
 echo ============================================================================================
 echo Endereço físico da partição:"$enderecoFisico"
 echo Endereço da pasta a ser montada a partição local:"$enderecoHD"

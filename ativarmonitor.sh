@@ -23,7 +23,7 @@ else
     echo "Erro: O arquivo de configuração não foi encontrado: $caminho_arquivo_conf"
     exit 1
 fi
-
+pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
 pasta_origem=$enderecoHD
 pasta_destino=$enderecoDriver
 lixeira="lixo"
