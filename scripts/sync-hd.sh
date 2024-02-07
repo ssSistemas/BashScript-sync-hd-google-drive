@@ -8,7 +8,7 @@ if [ -z "$BASH" ]; then
     exit 1
 fi
 
-caminho_arquivo_conf="monitor.conf"
+caminho_arquivo_conf="/etc/sync-hd/monitor.conf"
 
 # Verificar se o arquivo existe
 if [ -e "$caminho_arquivo_conf" ]; then

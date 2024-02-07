@@ -8,7 +8,7 @@ if [ -z "$BASH" ]; then
     exit 1
 fi
 
-caminho_arquivo_conf="monitor.conf"
+caminho_arquivo_conf="/etc/sync-hd/monitor.conf"
 
 # Verificar se o arquivo existe
 if [ -e "$caminho_arquivo_conf" ]; then
@@ -77,8 +77,6 @@ echo Nome da pasta montada a partição local:"$nomePasta"
 
 Rodar=1;
 
-#inotifywait -e open -e modify -e delete -e close_nowrite -e close  -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo
-#inotifywait -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo
 inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo
 
 do

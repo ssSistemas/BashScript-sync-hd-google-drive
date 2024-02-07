@@ -9,7 +9,7 @@ if [ -z "$BASH" ]; then
 fi
 
 
-caminho_arquivo_conf="monitor.conf"
+caminho_arquivo_conf="/etc/sync-hd/monitor.conf"
 
 # Verificar se o arquivo existe
 if [ -e "$caminho_arquivo_conf" ]; then
@@ -21,7 +21,6 @@ else
     exit 1
 fi
 
-
-echo Iniciando copia da pastal local: $enderecoHD
-echo para servidor google drive de configuração no rclone de nome: $servidorRclone
-rclone sync --transfers 6 --checkers 10 "$enderecoHD" "$servidorRclone":
+echo Iniciando copia do servidor google drive de configurado no rclone com nome: $servidorRclone
+echo para ao local: $enderecoHD
+rclone sync --transfers 2 --checkers 3 --checksum "$servidorRclone": "$enderecoHD"

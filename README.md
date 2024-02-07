@@ -21,30 +21,32 @@ Antes de executar os scripts, verifique se você tem os seguintes requisitos:
 Configure o arquivo monitor.conf com as variáveis necessárias, como descrito abaixo.
 
 ###  Execute o script 
-`` bash montarDriver.sh ``
+`` bash sync-hd.sh ``
 
 #### Descrição dos Scripts
 
-##### ativarmonitor.sh: Este script monitora a pasta local e sincroniza automaticamente os arquivos com o Google Drive. Ele também move os arquivos excluídos localmente para uma pasta de lixo no Google Drive.
+##### sync-hd.sh: Este script monta a partição local e o Google Drive especificados no arquivo de configuração monitor.conf. Ele também inicia o monitoramento da pasta local.
 
-##### montarDrive.sh: Este script monta a partição local e o Google Drive especificados no arquivo de configuração monitor.conf. Ele também inicia o monitoramento da pasta local.
+##### sync-hd-monitor.sh: Este script monitora a pasta local e sincroniza automaticamente os arquivos com o Google Drive. Ele também move os arquivos excluídos localmente para uma pasta de lixo no Google Drive.
 
-##### copiarTodoDriver.sh: Este script realiza uma cópia do servidor Google Drive para a pasta local.
+##### sync-copiarTodoDriver.sh: Este script realiza uma cópia do servidor Google Drive para a pasta local.
 
-##### atualizarTodoDriver.sh: Este script realiza uma cópia de todos os arquivos da pasta local para o servidor Google Drive.
+##### sync-atualizarTodoDriver.sh: Este script realiza uma cópia de todos os arquivos da pasta local para o servidor Google Drive.
+
+##### sync-config.sh: Este script auxilia na geração do arquivo de configuração monitor.conf
 
 ### Arquivo de Configuração (monitor.conf)
 ##### monitor.conf contém as seguintes variáveis de configuração:
 
-###### enderecoFisico: Endereço físico da partição local.
+Deve estar localizado em /etc/sync-hd/monitor.conf
 
-###### enderecoHD: Endereço da pasta a ser montada como a partição local.
+1) enderecoFisico: Endereço físico da partição local.
 
-###### pastahd: Nome da pasta montada como a partição local.
+2) enderecoHD: Endereço da pasta a ser montada como a partição local.
 
-###### servidorRclone: Configuração de acesso Rclone para o Google Drive.
+3) servidorRclone: Configuração de acesso Rclone para o Google Drive.
 
-###### enderecoDriver: Pasta montada do Google Drive.
+4) enderecoDriver: Pasta montada do Google Drive.
 
 ##### Exemplo Arquivo de Configuração
 
