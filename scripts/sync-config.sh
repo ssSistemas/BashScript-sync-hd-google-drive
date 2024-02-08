@@ -82,16 +82,53 @@ if [ $? -eq 0 ]; then
     echo "=============================================="
     echo "***************************************************"
     echo Programa instalado e configurado
-    echo
+    echo "====================================================================="
+    echo "Configurar inicialização automatica"
+    echo "====================================================================="
+    echo Deseja iniciar o monitoramente automaticamente ao iniciar o linux?
+    echo para sim digite s:
+    read input
+    if [ "$input" = "s" ]; then
+        
+        sudo bash -c "echo "[Unit]" > /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "Description=Sync HD Service" >> /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "After=network.target" >> /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "[Service]" >> /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "ExecStart=/usr/bin/sync-hd.sh b" >> /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "[Install]" >> /etc/systemd/system/sync-hd.service"
+        sudo bash -c "echo "WantedBy=multi-user.target" >> /etc/systemd/system/sync-hd.service"
+        sudo systemctl daemon-reload
+        sudo systemctl enable sync-hd.service
+
+        echo Serviço de sync-hd será iniciado automaticamente...........
+    else   
+        echo Lembre-se que escolheu por iniciar o serviço sync-hd sempre manualmente.
+    fi
+    echo "***********************************************"
+
+    
+    
     echo Arquivo de configuração ficou assim:
     echo "=============================================="
     cat /etc/sync-hd/monitor.conf
     echo "=============================================="
     echo Caso necessário reconfigurar use: bash sync-config.sh
     echo
+     
     echo "==> Apara iniciar o monitoramento execute: bash sync-hd.sh"
     echo "==> Apara iniciar o monitoramento em background execute: bash sync-hd.sh b"
+
+    echo "====================================================================="
+    echo Deseja iniciar o monitoramente AGORA?
+    echo para sim digite s:
+    read input
+    if [ "$input" = "s" ]; then
+        bash sync-hd.sh b 
+    fi
+    echo "*********************************************************************"
+    
     exit 1
+
 else
     echo "Senha do sudo incorreta. Por favor, tente novamente."
     exit 1
