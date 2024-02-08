@@ -8,6 +8,15 @@ if [ -z "$BASH" ]; then
     exit 1
 fi
 
+parametro=$1
+
+if [ "$parametro" = "?" ]; then
+    echo o sync-hd.sh possui somente um parametro
+    echo o parametro é para executar em background
+    echo parametro: b
+    exit 1
+fi
+
 caminho_arquivo_conf="/etc/sync-hd/monitor.conf"
 
 # Verificar se o arquivo existe
@@ -19,6 +28,7 @@ else
     echo "Erro: O arquivo de configuração não foi encontrado: $caminho_arquivo_conf"
     exit 1
 fi
+
 
 pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
 
@@ -68,7 +78,14 @@ else
 fi
 
 sleep 5
-bash ativarmonitor.sh
+
+if [ "$parametro" = "b" ]; then
+    bash sync-hd-monitor.sh > /dev/null 2>&1 &
+else
+    bash sync-hd-monitor.sh
+fi
+
+
 sleep 5
 monitorRodando=$(ps -aux | grep inotifywait | grep "$pastahd")
 
