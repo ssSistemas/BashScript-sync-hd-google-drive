@@ -92,11 +92,18 @@ if [ $? -eq 0 ]; then
         
         sudo bash -c 'echo "[Unit]" > /etc/systemd/system/sync-hd.service'
         sudo bash -c 'echo "Description=Sync HD Service" >> /etc/systemd/system/sync-hd.service'
-        sudo bash -c 'echo "After=network.target" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "After=network.target network-online.target graphical.target" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "Wants=network-online.target" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "" >> /etc/systemd/system/sync-hd.service'
         sudo bash -c 'echo "[Service]" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "User=root" >> /etc/systemd/system/sync-hd.service'
         sudo bash -c 'echo "ExecStart=/usr/bin/sync-hd.sh b" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "Restart=always" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "RestartSec=3" >> /etc/systemd/system/sync-hd.service'
+        sudo bash -c 'echo "" >> /etc/systemd/system/sync-hd.service'
         sudo bash -c 'echo "[Install]" >> /etc/systemd/system/sync-hd.service'
         sudo bash -c 'echo "WantedBy=multi-user.target" >> /etc/systemd/system/sync-hd.service'
+
         sudo systemctl daemon-reload
         sudo systemctl enable sync-hd.service
 

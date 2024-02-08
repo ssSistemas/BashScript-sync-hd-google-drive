@@ -64,6 +64,8 @@ else
     exit 1
 fi
 
+#su - "$USER" -c "rclone mount --vfs-cache-mode full '$servidorRclone': '$enderecoDriver' > /dev/null 2>&1 &"
+
 rclone mount --vfs-cache-mode full "$servidorRclone": "$enderecoDriver" > /dev/null 2>&1 &
 
 sleep 10
