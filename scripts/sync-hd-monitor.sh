@@ -3,8 +3,8 @@
 # Verificar se o script está sendo executado com o Bash
 if [ -z "$BASH" ]; then
     echo "Este script requer o Bash para execução. Por favor, execute com bash."
-    echo Exemplo:
-    echo bash ativarmonitor.sh
+    echo "Exemplo:"
+    echo "bash ativarmonitor.sh"
     exit 1
 fi
 
@@ -23,6 +23,7 @@ else
     echo "Erro: O arquivo de configuração não foi encontrado: $caminho_arquivo_conf"
     exit 1
 fi
+
 pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
 pasta_origem=$enderecoHD
 pasta_destino=$enderecoDriver
@@ -47,142 +48,122 @@ ApagarPasta() {
     pasta="$1"
 
     while true; do
-
         processoRodando=$(ps -aux | grep "rsync" | grep -v grep)
 
         if [ ! -n "$processoRodando" ]; then
-            echo Processo INATIVO
+            echo "Processo INATIVO"
 
-            # Conta o número de arquivos e pastas em $diretorio e em todas as suas subpastas
-
-            #total=$(find "$pasta" -mindepth 1 -type f -quit | wc -l)
             total=$(find "$pasta" -mindepth 1 -type f | wc -l)
 
             if [ "$total" -eq 0 ]; then
-                echo A pasta e todas as subpastas estão vazias.
+                echo "A pasta e todas as subpastas estão vazias."
             else
-                echo A pasta e as subpasta contém arquivos algum arquivo.
+                echo "A pasta e as subpasta contém arquivos algum arquivo."
             fi
         else
-            echo Ainda movendo a "$pasta", aguarde.
+            echo "Ainda movendo a $pasta, aguarde."
         fi
         sleep 10
     done
 }
 
-echo pasta_origem:"$pasta_origem"
-echo pasta_destino:"$pasta_destino"
-echo endLixeira:"$endLixeira"
-echo Nome da pasta montada a partição local:"$nomePasta"
+echo "pasta_origem:$pasta_origem"
+echo "pasta_destino:$pasta_destino"
+echo "endLixeira:$endLixeira"
+echo "Nome da pasta montada a partição local:$nomePasta"
 
-Rodar=1;
+Rodar=1
 
-inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo
+inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+    if [ $Rodar -eq 1 ]; then
+        if [ ! (echo "$arquivo" | grep -q "\.~") ]; then
+            if echo "$arquivo" | grep -q "\.Trash-1000"; then
+                if [ "$evento" = "MODIFY" ]; then
+                    if [ -e "$arquivo" ]; then
+                        echo "-----------------------------------------------------------------------"
+                        echo "===================================================================="
+                        echo "                 Arquivo enviado para a lixeira!"
+                        echo "Arquivos do google drive são movidos para a pasta: $endLixeira"
+                        echo "===================================================================="
 
-do
+                        conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
+                        endnoDrive="$pasta_destino/$conteudo"
+                        caminho_lixo="$endLixeira/$conteudo"
 
-    if [ $Rodar -eq 1 ];then
+                        if [ -f "$endnoDrive" ]; then
+                            if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+                                mkdir -p "$(dirname "$caminho_lixo")"
+                            fi
 
-        if echo "$arquivo" | grep -q "\.Trash-1000"; then
-            # if [ "$evento" = "MODIFY" ]; then
+                            rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                        else
+                            if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+                                mkdir -p "$(dirname "$caminho_lixo")"
+                            fi
 
-            #     if [ -e "$arquivo" ]; then
+                            if [[ ! "$endnoDrive" == */ ]]; then
+                                endnoDrive="$endnoDrive/"
+                            fi
 
-                    echo -----------------------------------------------------------------------
-                    echo ====================================================================
-                    echo                  Arquivo enviado para a lixeira!
-                    echo Arquivos do google drive são movidos para a pasta : $endLixeira
-                    echo ====================================================================
+                            echo "----------------------------------------------------"
+                            echo "Movendo"
+                            echo "de: $endnoDrive*"
+                            echo "pr: $caminho_lixo"
+                            echo "----------------------------------------------------"
 
-            #         conteudo="ler"
-
-            #         conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
-
-            #         endnoDrive="$pasta_destino/$conteudo"
-            #         caminho_lixo="$endLixeira/$conteudo"
-
-            #         if [ -f "$endnoDrive" ];then
-            #             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-            #                 mkdir -p "$(dirname "$caminho_lixo")"
-            #             fi
-
-            #             rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
-
-            #         else
-
-            #             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-            #                 mkdir -p "$(dirname "$caminho_lixo")"
-            #             fi
-
-            #             if [[ ! "$endnoDrive" == */ ]]; then
-            #                 endnoDrive="$endnoDrive/"
-            #             fi
-
-            #             echo ----------------------------------------------------
-            #             echo Movendo
-            #             echo de: "$endnoDrive"*
-            #             echo pr: "$caminho_lixo"
-            #             echo ----------------------------------------------------
-
-            #             rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
-
-            #             ApagarPasta "$endnoDrive" &
-            #         fi
-            #     fi
-            # fi
-        else
-
-            if echo "$arquivo" | grep -q ".part"; then
-                arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
-            fi
-
-            novo_caminho=$(echo "$arquivo" | sed 's/'"$nomePasta"'/@/g' | cut -d '@' -f2)
-
-            completo_caminho="$pasta_destino""$novo_caminho"
-
-            if [ "$evento" = "DELETE" ]; then
-                caminho_lixo="$pasta_destino"/"$lixeira""$novo_caminho"
-                echo ====================================================================
-                echo                  Arquivo DELETADOS permanentemente em local
-                echo ====================================================================
-                echo Para sua segurança o arquivo do google drive são movidos para a pasta : $endLixeira
-                echo será movido para:"$caminho_lixo"
-
-                if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                    mkdir -p "$(dirname "$caminho_lixo")"
+                            rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                        fi
+                    fi
                 fi
-
-                echo ----------------------------------------------------
-                echo Movendo
-                echo de: "$completo_caminho"*
-                echo pr: "$caminho_lixo"
-                echo ----------------------------------------------------
-
-                rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo"
             else
-
-                if [ ! -d "$(dirname "$completo_caminho")" ]; then
-                    mkdir -p "$(dirname "$completo_caminho")"
+                if echo "$arquivo" | grep -q ".part"; then
+                    arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
                 fi
 
-                if [ -f "$arquivo" ]; then
-                    echo ----------------------------------------------------
-                    echo Copiando acionado pelo evento:"$evento"
-                    echo de: "$arquivo"*
-                    echo pr: "$completo_caminho"
-                    echo ----------------------------------------------------
+                novo_caminho=$(echo "$arquivo" | sed 's/'"$nomePasta"'/@/g' | cut -d '@' -f2)
+                completo_caminho="$pasta_destino""$novo_caminho"
 
-                    if [ ! -e "$completo_caminho" ] || [ "$arquivo" -nt "$completo_caminho" ] ; then
-                        rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                if [ "$evento" = "DELETE" ]; then
+                    caminho_lixo="$pasta_destino"/"$lixeira""$novo_caminho"
+                    echo "===================================================================="
+                    echo "                 Arquivo DELETADOS permanentemente em local"
+                    echo "===================================================================="
+                    echo "Para sua segurança o arquivo do google drive são movidos para a pasta: $endLixeira"
+                    echo "será movido para:$caminho_lixo"
+
+                    if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+                        mkdir -p "$(dirname "$caminho_lixo")"
+                    fi
+
+                    echo "----------------------------------------------------"
+                    echo "Movendo"
+                    echo "de: $completo_caminho*"
+                    echo "pr: $caminho_lixo"
+                    echo "----------------------------------------------------"
+
+                    rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                else
+                    if [ ! -d "$(dirname "$completo_caminho")" ]; then
+                        mkdir -p "$(dirname "$completo_caminho")"
+                    fi
+
+                    if [ -f "$arquivo" ]; then
+                        echo "----------------------------------------------------"
+                        echo "Copiando acionado pelo evento:$evento"
+                        echo "de: $arquivo*"
+                        echo "pr: $completo_caminho"
+                        echo "----------------------------------------------------"
+
+                        if [ ! -e "$completo_caminho" ] || [ "$arquivo" -nt "$completo_caminho" ]; then
+                            rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                        fi
                     fi
                 fi
             fi
         fi
     else
-        echo MODO MONITOR ATIVADO!
-        echo Evento:"$evento"
-        echo Arquivo:"$arquivo"
+        echo "MODO MONITOR ATIVADO!"
+        echo "Evento:$evento"
+        echo "Arquivo:$arquivo"
     fi
-
 done
-
