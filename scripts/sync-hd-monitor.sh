@@ -76,7 +76,8 @@ Rodar=1
 
 inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     if [ $Rodar -eq 1 ]; then
-        if [ ! (echo "$arquivo" | grep -q "\.~") ] || [  (echo "$arquivo" | grep -q "Unconfirmed") ] ; then
+        if ! echo "$arquivo" | grep -q "\.~" ; then
+         if ! echo "$arquivo" | grep -q "Unconfirmed" ; then
             if echo "$arquivo" | grep -q "\.Trash-1000"; then
                 if [ "$evento" = "MODIFY" ]; then
                     if [ -e "$arquivo" ]; then
@@ -157,7 +158,7 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                     if [ -f "$arquivo" ]; then
                         echo "----------------------------------------------------"
                         echo "Copiando acionado pelo evento:$evento"
-                        echo "de: $arquivo*"
+                        echo "de: $arquivo"
                         echo "pr: $completo_caminho"
                         echo "----------------------------------------------------"
 
@@ -166,12 +167,13 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                                 rsync -a --protect-args "$arquivo" "$completo_caminho" &
                             fi
                         else
-                            echo precisa tratar quando é download.
+                            echo Precisa verificar não foi encontrado o arquivo na origem: "$arquivo".
                         fi
                     fi
                 fi
             fi
         fi
+      fi
     else
         echo "MODO MONITOR ATIVADO!"
         echo "Evento:$evento"
