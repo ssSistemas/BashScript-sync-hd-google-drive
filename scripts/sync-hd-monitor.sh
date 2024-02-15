@@ -74,7 +74,8 @@ echo "Nome da pasta montada a partição local:$nomePasta"
 
 Rodar=1
 
-inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+#inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
 #inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     if [ $Rodar -eq 1 ]; then
         if ! echo "$arquivo" | grep -q "\.~" ; then
