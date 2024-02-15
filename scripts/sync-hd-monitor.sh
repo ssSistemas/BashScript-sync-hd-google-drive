@@ -76,7 +76,7 @@ Rodar=1
 
 inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     if [ $Rodar -eq 1 ]; then
-        if [ ! (echo "$arquivo" | grep -q "\.~") ]; then
+        if [ ! (echo "$arquivo" | grep -q "\.~") ] || [  (echo "$arquivo" | grep -q "Unconfirmed") ] ; then
             if echo "$arquivo" | grep -q "\.Trash-1000"; then
                 if [ "$evento" = "MODIFY" ]; then
                     if [ -e "$arquivo" ]; then
@@ -116,9 +116,16 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                     fi
                 fi
             else
-                if echo "$arquivo" | grep -q ".part"; then
-                    arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
+
+                if echo "$arquivo" | grep -q "\.[a-zA-Z0-9]\{3\}\.[a-zA-Z0-9]\{3\}$"; then
+                    arquivo=$(echo "$arquivo" | sed 's/\(\.[a-zA-Z0-9]\{3\}\)\..*$/\1/')
                 fi
+
+
+
+                #if echo "$arquivo" | grep -q ".part"; then
+                #    arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
+                #fi
 
                 novo_caminho=$(echo "$arquivo" | sed 's/'"$nomePasta"'/@/g' | cut -d '@' -f2)
                 completo_caminho="$pasta_destino""$novo_caminho"
@@ -154,8 +161,12 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                         echo "pr: $completo_caminho"
                         echo "----------------------------------------------------"
 
-                        if [ ! -e "$completo_caminho" ] || [ "$arquivo" -nt "$completo_caminho" ]; then
-                            rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                        if [ -e "$arquivo" ]; then 
+                            if [ ! -e "$completo_caminho" ] || [ "$arquivo" -nt "$completo_caminho" ]; then
+                                rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                            fi
+                        else
+                            echo precisa tratar quando é download.
                         fi
                     fi
                 fi

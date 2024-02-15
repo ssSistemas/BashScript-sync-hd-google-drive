@@ -52,7 +52,7 @@ if [ ! -e $enderecoHD ]; then
     echo Pasta criada!
 fi
 
-sudo mount -o rw,nosuid,nodev,relatime,errors=remount-ro,uhelper=udisks2 "$enderecoFisico" "$enderecoHD"
+sudo mount -o rw,nosuid,nodev,relatime,errors=remount-ro,uhelper=udisks2 "$enderecoFisico" "$enderecoHD" &
 
 sleep 5
 
