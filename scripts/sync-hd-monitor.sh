@@ -74,7 +74,8 @@ echo "Nome da pasta montada a partição local:$nomePasta"
 
 Rodar=1
 
-inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+#inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     if [ $Rodar -eq 1 ]; then
         if ! echo "$arquivo" | grep -q "\.~" ; then
          if ! echo "$arquivo" | grep -q "Unconfirmed" ; then
@@ -96,7 +97,17 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                                 mkdir -p "$(dirname "$caminho_lixo")"
                             fi
 
+
+
+                            echo "----------------------------------------------------"
+                            echo "Movendo"
+                            echo "de: $endnoDrive"
+                            echo "pr: $caminho_lixo"
+                            echo "----------------------------------------------------"
+
                             rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                        
+                        
                         else
                             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
                                 mkdir -p "$(dirname "$caminho_lixo")"
@@ -118,15 +129,17 @@ inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while
                 fi
             else
 
-                if echo "$arquivo" | grep -q "\.[a-zA-Z0-9]\{3\}\.[a-zA-Z0-9]\{3\}$"; then
-                    arquivo=$(echo "$arquivo" | sed 's/\(\.[a-zA-Z0-9]\{3\}\)\..*$/\1/')
+             #   if echo "$arquivo" | grep -q "\.[a-zA-Z0-9]\{3\}\.[a-zA-Z0-9]\{3\}$"; then
+             #       arquivo=$(echo "$arquivo" | sed 's/\(\.[a-zA-Z0-9]\{3\}\)\..*$/\1/')
+             #   fi
+
+             
+                
+
+
+                if echo "$arquivo" | grep -q ".part"; then
+                    arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
                 fi
-
-
-
-                #if echo "$arquivo" | grep -q ".part"; then
-                #    arquivo=$(echo "$arquivo" | sed 's/.part/@/g' | cut -d '@' -f1)
-                #fi
 
                 novo_caminho=$(echo "$arquivo" | sed 's/'"$nomePasta"'/@/g' | cut -d '@' -f2)
                 completo_caminho="$pasta_destino""$novo_caminho"
