@@ -4,7 +4,7 @@
 if [ -z "$BASH" ]; then
     echo "Este script requer o Bash para execução. Por favor, execute com bash."
     echo "Exemplo:"
-    echo "bash ativarmonitor.sh"
+    echo "bash sync-hd.sh"
     exit 1
 fi
 
@@ -14,10 +14,6 @@ caminho_arquivo_conf="/etc/sync-hd/monitor.conf"
 if [ -e "$caminho_arquivo_conf" ]; then
     # Carregar as variáveis do arquivo de configuração
     source "$caminho_arquivo_conf"
-    
-    # Restante do seu script
-    # ...
-    
 else
     # Exibir mensagem de erro e sair do script
     echo "Erro: O arquivo de configuração não foi encontrado: $caminho_arquivo_conf"
@@ -32,13 +28,13 @@ endLixeira="$pasta_destino/$lixeira"
 nomePasta=$pastahd
 
 if [ ! -n "$(ls -A $enderecoHD)" ]; then
-    echo "Erro partição local não montada, execute primeiramente o script montarDriver.sh"
+    echo "Erro partição local não montada, execute primeiramente o script sync-hd.sh"
     echo "tente novamente"
     exit 1
 fi
 
 if [ ! "$(ls -A $enderecoDriver)" ]; then
-    echo "Erro ao montar GOOGLE DRIVE não montado, execute primeiramente o script montarDriver.sh"
+    echo "Erro ao montar GOOGLE DRIVE não montado, execute primeiramente o script sync-hd.sh"
     echo "tente novamente"
     exit 1
 fi
