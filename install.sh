@@ -17,7 +17,7 @@ if [ $? -eq 0 ]; then
     echo Deseja iniciar o script de configuração?
     echo para sim digite: s
     read input
-    if [ "$input" ="s" ];then
+    if [ "$input" = "s" ];then
         bash sync-config.sh
     else 
         echo Para iniciar o script de configuração em um outro momento execute:
