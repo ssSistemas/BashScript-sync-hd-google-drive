@@ -14,7 +14,6 @@ if [ $? -eq 0 ]; then
     sudo chmod +x /usr/bin/sync-hd-monitor.sh
     sudo chmod +x /usr/bin/sync-hd.sh
     sudo chmod +x /usr/bin/sync-config.sh
-    exit 1
     bash sync-config.sh
 else
     echo "Senha do sudo incorreta. Instalação cancelada."

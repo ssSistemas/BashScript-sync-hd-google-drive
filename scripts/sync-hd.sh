@@ -42,13 +42,13 @@ echo ===========================================================================
 
 if [ ! -e $enderecoHD ]; then
     sudo mkdir -p $enderecoHD
-
+    
     if [ ! -e $enderecoHD ]; then
         echo A pasta "$enderecoHD" não existe, e não foi possível criá-la.
         echo Tente novamente.
         exit 1
     fi
-
+    
     echo Pasta criada!
 fi
 
@@ -64,20 +64,33 @@ else
     exit 1
 fi
 
-#su - "$USER" -c "rclone mount --vfs-cache-mode full '$servidorRclone': '$enderecoDriver' > /dev/null 2>&1 &"
 
-rclone mount --vfs-cache-mode full "$servidorRclone": "$enderecoDriver" > /dev/null 2>&1 &
 
-sleep 10
+let cont=0
+while [ "a"=="a" ]
+do
+    rclone mount --vfs-cache-mode full "$servidorRclone": "$enderecoDriver" > /dev/null 2>&1 &
+    
+    sleep 10
+    
+    if [ "$(ls -A $enderecoDriver)" ]; then
+        echo "Google drive Montado com sucesso!"
+        break
+    else
+        echo "Erro ao montar GOOGLE DRIVE"
 
-if [ "$(ls -A $enderecoDriver)" ]; then
-    echo "Google drive Montado com sucesso!"
-else
-    echo "Erro ao montar GOOGLE DRIVE, não podemos continuar o processo de montar o google drive e ativar o monitoramento!"
-    echo "Desmontando o drive LOCAL $enderecoHD"
-    sudo umount $enderecoHD
-    exit 1
-fi
+    fi
+    
+    if [ "$cont" -eq 5 ]; then
+        echo "não podemos continuar o processo de montar o google drive e ativar o monitoramento!"
+        echo "Desmontando o drive LOCAL $enderecoHD"
+        sudo umount $enderecoHD
+        echo Tente novamente mais tarde.
+        exit 1
+    fi
+    
+    let cont++
+done
 
 sleep 5
 
