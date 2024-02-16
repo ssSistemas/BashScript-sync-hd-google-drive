@@ -23,4 +23,5 @@ fi
 
 echo Iniciando copia do servidor google drive de configurado no rclone com nome: $servidorRclone
 echo para ao local: $enderecoHD
-rclone sync --transfers 2 --checkers 3 --checksum "$servidorRclone": "$enderecoHD"
+rclone copy --transfers 2 --checkers 3 --checksum --update "$servidorRclone": "$enderecoHD"
+

@@ -68,9 +68,17 @@ echo "pasta_destino:$pasta_destino"
 echo "endLixeira:$endLixeira"
 echo "Nome da pasta montada a partição local:$nomePasta"
 
+
+# if ps -aux | grep -q '[r]clone sync --transfers 2 --checkers 3 --checksum'; then
+#   echo "O processo rclone está rodando."
+# else
+#   echo "O processo rclone não está rodando."
+# fi
+
+
+
 Rodar=1
 deletePermanente=0
-
 #inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
 inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     #inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
@@ -80,39 +88,48 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                 if echo "$arquivo" | grep -q "\.Trash-1000"; then
                     if [ "$evento" = "MODIFY" ]; then
                         if [ -e "$arquivo" ]; then
-                            echo "-----------------------------------------------------------------------"
-                            echo "===================================================================="
-                            echo "                 Arquivo enviado para a lixeira!"
-                            echo "Arquivos do google drive são movidos para a pasta: $endLixeira"
-                            echo "===================================================================="
                             
-                            conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
-                            endnoDrive="$pasta_destino/$conteudo"
-                            caminho_lixo="$endLixeira/$conteudo"
-                            
-                            if [ -f "$endnoDrive" ]; then
-                                if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                                    mkdir -p "$(dirname "$caminho_lixo")"
-                                fi
-                                echo "----------------------------------------------------"
-                                echo "Movendo"
-                                echo "de: $endnoDrive"
-                                echo "pr: $caminho_lixo"
-                                echo "----------------------------------------------------"
-                                rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                        
+
+                            if ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
+                                echo "O processo rclone está rodando."
                             else
-                                if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                                    mkdir -p "$(dirname "$caminho_lixo")"
+                                
+                                
+                                echo "-----------------------------------------------------------------------"
+                                echo "===================================================================="
+                                echo "                 Arquivo enviado para a lixeira!"
+                                echo "Arquivos do google drive são movidos para a pasta: $endLixeira"
+                                echo "===================================================================="
+                                
+                                conteudo=$(python3 -c "import urllib.parse; print(urllib.parse.unquote('$(cat "$arquivo" | grep 'Path' | cut -d '=' -f2)'))")
+                                endnoDrive="$pasta_destino/$conteudo"
+                                caminho_lixo="$endLixeira/$conteudo"
+                                
+                                if [ -f "$endnoDrive" ]; then
+                                    if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+                            echo            mkdir -p "$(dirname "$caminho_lixo")"
+                                    fi
+                                    echo "----------------------------------------------------"
+                                    echo "Movendo"
+                                    echo "de: $endnoDrive"
+                                    echo "pr: $caminho_lixo"
+                                    echo "----------------------------------------------------"
+                            echo        rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                else
+                                    if [ ! -d "$(dirname "$caminho_lixo")" ]; then
+                            echo            mkdir -p "$(dirname "$caminho_lixo")"
+                                    fi
+                                    if [[ ! "$endnoDrive" == */ ]]; then
+                                        endnoDrive="$endnoDrive/"
+                                    fi
+                                    echo "----------------------------------------------------"
+                                    echo "Movendo"
+                                    echo "de: $endnoDrive*"
+                                    echo "pr: $caminho_lixo"
+                                    echo "----------------------------------------------------"
+                            echo        rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
                                 fi
-                                if [[ ! "$endnoDrive" == */ ]]; then
-                                    endnoDrive="$endnoDrive/"
-                                fi
-                                echo "----------------------------------------------------"
-                                echo "Movendo"
-                                echo "de: $endnoDrive*"
-                                echo "pr: $caminho_lixo"
-                                echo "----------------------------------------------------"
-                                rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
                             fi
                         fi
                     fi
@@ -134,7 +151,7 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             echo "será movido para:$caminho_lixo"
                             
                             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                                mkdir -p "$(dirname "$caminho_lixo")"
+                echo                mkdir -p "$(dirname "$caminho_lixo")"
                             fi
                             
                             echo "----------------------------------------------------"
@@ -143,7 +160,7 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             echo "pr: $caminho_lixo"
                             echo "----------------------------------------------------"
                             
-                            rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                echo            rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
                         else
                             echo ===========================================================
                             echo Evento acionando:"$evento"
@@ -152,7 +169,7 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                         fi
                     else
                         if [ ! -d "$(dirname "$completo_caminho")" ]; then
-                            mkdir -p "$(dirname "$completo_caminho")"
+                echo            mkdir -p "$(dirname "$completo_caminho")"
                         fi
                         
                         if [ -f "$arquivo" ]; then
@@ -167,24 +184,24 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             
                             if [ -e "$arquivo" ]; then
                                 if [ ! -e "$completo_caminho" ];then
-                                    rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                echo                    rsync -a --protect-args "$arquivo" "$completo_caminho" &
                                     echo Arquivo copiado, não existia no destino.
                                 else
                                     #echo Calculando Hashs
-                                    #hash1=$(md5sum "$arquivo" | awk '{print $1}')
-                                    #hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
-                                    #if [ "$hash1" == "$hash2" ]; then
-                                    #    echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
-                                    #   echo "$hash1" = "$hash2"
-                                    #else
-                                    #  echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
-                                    if [ "$arquivo" -nt "$completo_caminho" ]; then
-                                        echo Copia necessaria de arquivo, iniciando!!
-                                        rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                    hash1=$(md5sum "$arquivo" | awk '{print $1}')
+                                    hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
+                                    if [ "$hash1" == "$hash2" ]; then
+                                        echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
+                                        #   echo "$hash1" = "$hash2"
                                     else
-                                        echo Não necessário a copia pois o destino é mais atual!
+                                        #  echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
+                                        if [ "$arquivo" -nt "$completo_caminho" ]; then
+                                            echo Copia necessaria de arquivo, iniciando!!
+                echo                            rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                        else
+                                            echo Não necessário a copia pois o destino é mais atual!
+                                        fi
                                     fi
-                                    #fi
                                 fi
                             else
                                 echo Precisa verificar não foi encontrado o arquivo na origem: "$arquivo".
@@ -195,6 +212,7 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
             fi
         fi
     else
+        
         echo "==================================================="
         echo "Evento:$evento"
         echo "Arquivo:$arquivo"
