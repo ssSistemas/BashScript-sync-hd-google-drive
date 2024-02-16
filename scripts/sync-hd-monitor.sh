@@ -79,6 +79,8 @@ echo "Nome da pasta montada a partição local:$nomePasta"
 
 Rodar=1
 deletePermanente=0
+ativarSimulacao=1
+
 #inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
 inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     #inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
