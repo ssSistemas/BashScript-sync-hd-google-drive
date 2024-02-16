@@ -91,14 +91,9 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                     if [ "$evento" = "MODIFY" ]; then
                         if [ -e "$arquivo" ]; then
                             
-                        
-
+                            
+                            
                             if ! ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
-                           #     echo "==================================================="
-                           #     echo "Evento:$evento"
-                           #     echo "Arquivo:$arquivo"
-                           #     echo "O processo rclone está rodando."
-                           # else
                                 
                                 
                                 echo "-----------------------------------------------------------------------"
@@ -113,17 +108,37 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                 
                                 if [ -f "$endnoDrive" ]; then
                                     if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                            echo            mkdir -p "$(dirname "$caminho_lixo")"
+                                        if [ "$ativarSimulacao" -eq 1 ];then
+                                            echo mkdir -p "$(dirname "$caminho_lixo")"
+                                        else
+                                            mkdir -p "$(dirname "$caminho_lixo")"
+                                        fi
                                     fi
                                     echo "----------------------------------------------------"
                                     echo "Movendo"
                                     echo "de: $endnoDrive"
                                     echo "pr: $caminho_lixo"
                                     echo "----------------------------------------------------"
-                            echo        rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                    
+                                    if [ "$ativarSimulacao" -eq 1 ];then
+                                        echo rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                    else
+                                        rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                    fi
+                                    
+                                    
+                                    
+                                    
                                 else
                                     if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                            echo            mkdir -p "$(dirname "$caminho_lixo")"
+                                        
+                                        if [ "$ativarSimulacao" -eq 1 ];then
+                                            echo mkdir -p "$(dirname "$caminho_lixo")"
+                                        else
+                                            mkdir -p "$(dirname "$caminho_lixo")"
+                                        fi
+                                        
+                                        
                                     fi
                                     if [[ ! "$endnoDrive" == */ ]]; then
                                         endnoDrive="$endnoDrive/"
@@ -133,7 +148,14 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                     echo "de: $endnoDrive*"
                                     echo "pr: $caminho_lixo"
                                     echo "----------------------------------------------------"
-                            echo        rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                                    
+                                    if [ "$ativarSimulacao" -eq 1 ];then
+                                        echo rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                                    else
+                                        rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                                    fi
+                                    
+                                    
                                 fi
                             fi
                         fi
@@ -156,7 +178,14 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             echo "será movido para:$caminho_lixo"
                             
                             if [ ! -d "$(dirname "$caminho_lixo")" ]; then
-                echo                mkdir -p "$(dirname "$caminho_lixo")"
+                                if [ "$ativarSimulacao" -eq 1 ];then
+                                    echo mkdir -p "$(dirname "$caminho_lixo")"
+                                else
+                                    mkdir -p "$(dirname "$caminho_lixo")"
+                                fi
+                                
+                                
+                                
                             fi
                             
                             echo "----------------------------------------------------"
@@ -164,8 +193,14 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             echo "de: $completo_caminho*"
                             echo "pr: $caminho_lixo"
                             echo "----------------------------------------------------"
+                            if [ "$ativarSimulacao" -eq 1 ];then
+                                echo rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                            else
+                                rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                            fi
                             
-                echo            rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                            
+                            
                         else
                             echo ===========================================================
                             echo Evento acionando:"$evento"
@@ -174,7 +209,15 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                         fi
                     else
                         if [ ! -d "$(dirname "$completo_caminho")" ]; then
-                echo            mkdir -p "$(dirname "$completo_caminho")"
+                            
+                            if [ "$ativarSimulacao" -eq 1 ];then
+                                echo mkdir -p "$(dirname "$completo_caminho")"
+                            else
+                                mkdir -p "$(dirname "$completo_caminho")"
+                            fi
+                            
+                            
+                            
                         fi
                         
                         if [ -f "$arquivo" ]; then
@@ -189,7 +232,14 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                             
                             if [ -e "$arquivo" ]; then
                                 if [ ! -e "$completo_caminho" ];then
-                echo                    rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                    
+                                    if [ "$ativarSimulacao" -eq 1 ];then
+                                        echo rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                    else
+                                        rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                    fi
+                                    
+                                    
                                     echo Arquivo copiado, não existia no destino.
                                 else
                                     #echo Calculando Hashs
@@ -202,7 +252,15 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                         #  echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
                                         if [ "$arquivo" -nt "$completo_caminho" ]; then
                                             echo Copia necessaria de arquivo, iniciando!!
-                echo                            rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                            
+                                            if [ "$ativarSimulacao" -eq 1 ];then
+                                                echo rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                            else
+                                                rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                            fi
+                                            
+                                            
+                                            
                                         else
                                             echo Não necessário a copia pois o destino é mais atual!
                                         fi
