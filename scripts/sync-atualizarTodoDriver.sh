@@ -24,4 +24,4 @@ fi
 
 echo Iniciando copia da pastal local: $enderecoHD
 echo para servidor google drive de configuração no rclone de nome: $servidorRclone
-rclone sync --transfers 6 --checkers 10 "$enderecoHD" "$servidorRclone":
+rclone copy --transfers 6 --checkers 10 --checksum --update "$enderecoHD" "$servidorRclone":
