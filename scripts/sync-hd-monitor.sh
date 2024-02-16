@@ -84,8 +84,10 @@ ativarSimulacao=1
 #inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
 inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
     #inotifywait -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
+    oculto_arquivo=$(basename "$arquivo")
+    
     if [ $Rodar -eq 1 ]; then
-        if [[ $arquivo != .* ]]; then
+        if [[ $oculto_arquivo != .* ]]; then
             if ! echo "$arquivo" | grep -q "\.~" ; then
                 if ! echo "$arquivo" | grep -q "Unconfirmed" ; then
                     if echo "$arquivo" | grep -q "\.Trash-1000"; then
