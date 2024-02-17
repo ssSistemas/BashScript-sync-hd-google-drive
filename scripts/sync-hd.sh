@@ -4,14 +4,16 @@
 #função para sincronizar hd e google drive
 sincronizarHD() {
     sleep 30
-    bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+    nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+
+
     
     sleep 30
     
     while [ "a" = "a" ]
     do
         if ! ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
-            bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
+            nice -n 15 bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
             break
         else
             sleep 300
