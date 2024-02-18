@@ -5,8 +5,8 @@
 sincronizarHD() {
     sleep 30
     nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
-
-
+    
+    
     
     sleep 30
     
@@ -79,7 +79,7 @@ sudo -v
 
 
 if [ ! $? -eq 0 ]; then
-
+    
     echo "Senha do sudo incorreta. tente novamente."
     exit 1
 fi
@@ -113,6 +113,9 @@ do
     else
         echo "Erro ao montar GOOGLE DRIVE"
         
+        if [ "$(ls -A ~/.cache/rclone)" ]; then
+            rm -r ~/.cache/rclone/*
+        fi
     fi
     
     if [ "$cont" -eq 5 ]; then
