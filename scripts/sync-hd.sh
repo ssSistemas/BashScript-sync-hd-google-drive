@@ -73,6 +73,19 @@ if [ ! -e $enderecoHD ]; then
     echo Pasta criada!
 fi
 
+sudo echo
+
+sudo -v
+
+
+if [ ! $? -eq 0 ]; then
+
+    echo "Senha do sudo incorreta. tente novamente."
+    exit 1
+fi
+
+
+
 sudo mount -o rw,nosuid,nodev,relatime,errors=remount-ro,uhelper=udisks2 "$enderecoFisico" "$enderecoHD" &
 
 sleep 5
