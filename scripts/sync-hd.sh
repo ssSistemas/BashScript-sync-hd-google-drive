@@ -61,6 +61,21 @@ echo Configuração acesso rclone para google drive:"$servidorRclone"
 echo Pasta montada o google drive:"$enderecoDriver"
 echo ============================================================================================
 
+echo ===========================================================================================
+echo Deseja sincronizar o HD e Google Drive, é aconelhado fazer isso pelo menos UMA vez ao dia.
+echo Caso deseje digite: s
+read input
+echo ===========================================================================================
+
+sincroHD=0
+
+if [ "$input" = "s" ]; then
+    sincroHD=1
+    echo Sincronização será iniciada após o completo carregamento do sync-hd iniciada.
+else
+    echo Vocẽ escolheu não sincronir no momento. 
+fi
+
 if [ ! -e $enderecoHD ]; then
     sudo mkdir -p $enderecoHD
     
@@ -131,18 +146,14 @@ done
 
 sleep 5
 
-echo ===========================================================================================
-echo Deseja sincronizar o HD e Google Drive, é aconelhado fazer isso pelo menos UMA vez ao dia.
-echo Caso deseje digite: s
-read input
 
-if [ "$input" = "s" ]; then
+
+if [ "$sincroHD" -eq 1 ]; then
     sincronizarHD &
-    echo Scrinoziação iniciada.
-else
-    echo Sincronizar depois.
+
 fi
-echo ===========================================================================================
+
+
 
 if [ "$parametro" = "b" ]; then
     bash sync-hd-monitor.sh > /dev/null 2>&1 &
