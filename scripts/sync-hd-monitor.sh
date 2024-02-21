@@ -124,9 +124,9 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                         echo "----------------------------------------------------"
                                         
                                         if [ "$ativarSimulacao" -eq 1 ];then
-                                            echo rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                            echo rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo"
                                         else
-                                            rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo" &
+                                            rsync -r -a --protect-args --remove-source-files "$endnoDrive" "$caminho_lixo"
                                         fi
                                         
                                         
@@ -153,9 +153,9 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                         echo "----------------------------------------------------"
                                         
                                         if [ "$ativarSimulacao" -eq 1 ];then
-                                            echo rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                                            echo rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo"
                                         else
-                                            rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo" &
+                                            rsync -a --protect-args --remove-source-files "$endnoDrive"* "$caminho_lixo"
                                         fi
                                         
                                         
@@ -197,9 +197,9 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                 echo "pr: $caminho_lixo"
                                 echo "----------------------------------------------------"
                                 if [ "$ativarSimulacao" -eq 1 ];then
-                                    echo rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                                    echo rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo"
                                 else
-                                    rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo" &
+                                    rsync -r -a --protect-args --remove-source-files "$completo_caminho" "$caminho_lixo"
                                 fi
                                 
                                 
@@ -237,34 +237,34 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                     if [ ! -e "$completo_caminho" ];then
                                         
                                         if [ "$ativarSimulacao" -eq 1 ];then
-                                            echo rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                            echo rsync -a --protect-args "$arquivo" "$completo_caminho"
                                         else
-                                            rsync -a --protect-args "$arquivo" "$completo_caminho" &
+                                            rsync -a --protect-args "$arquivo" "$completo_caminho"
                                         fi
                                         
                                         
                                         echo Arquivo copiado, não existia no destino.
                                     else
-                                        #echo Calculando Hashs
-                                        #hash1=$(md5sum "$arquivo" | awk '{print $1}')
-                                        #hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
-                                        #if [ "$hash1" == "$hash2" ]; then
-                                        #    echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
-                                        #   echo "$hash1" = "$hash2"
-                                        #else
-                                        #  echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
-                                        if [ "$arquivo" -nt "$completo_caminho" ]; then
-                                            echo Copia necessaria de arquivo, iniciando!!
-                                            
-                                            if [ "$ativarSimulacao" -eq 1 ];then
-                                                echo rsync -a --protect-args "$arquivo" "$completo_caminho" &
-                                            else
-                                                rsync -a --protect-args "$arquivo" "$completo_caminho" &
-                                            fi
+                                        echo Calculando Hashs
+                                        hash1=$(md5sum "$arquivo" | awk '{print $1}')
+                                        hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
+                                        if [ "$hash1" == "$hash2" ]; then
+                                            echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
+                                            echo "$hash1" = "$hash2"
                                         else
-                                            echo Não necessário a copia pois o destino é mais atual!
+                                            echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
+                                            if [ "$arquivo" -nt "$completo_caminho" ]; then
+                                                echo Copia necessaria de arquivo, iniciando!!
+                                                
+                                                if [ "$ativarSimulacao" -eq 1 ];then
+                                                    echo rsync -a --protect-args "$arquivo" "$completo_caminho"
+                                                else
+                                                    rsync -a --protect-args "$arquivo" "$completo_caminho"
+                                                fi
+                                            else
+                                                echo Não necessário a copia pois o destino é mais atual!
+                                            fi
                                         fi
-                                        #fi
                                     fi
                                 else
                                     echo Precisa verificar não foi encontrado o arquivo na origem: "$arquivo".
