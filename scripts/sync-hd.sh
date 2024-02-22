@@ -4,7 +4,18 @@
 #função para sincronizar hd e google drive
 sincronizarHD() {
     sleep 30
-    nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+
+
+        if ! ps -aux | grep -q '[r]clone copy'; then
+            nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+
+        else
+            
+            break
+        fi
+
+
+    
     
     
     
@@ -67,14 +78,14 @@ echo Caso deseje digite: s
 read input
 echo ===========================================================================================
 
-sincroHD=0
+sincroHD=1
 
-if [ "$input" = "s" ]; then
-    sincroHD=1
-    echo Sincronização será iniciada após o completo carregamento do sync-hd iniciada.
-else
-    echo Vocẽ escolheu não sincronir no momento. 
-fi
+#if [ "$input" = "s" ]; then
+#    sincroHD=1
+#    echo Sincronização será iniciada após o completo carregamento do sync-hd iniciada.
+#else
+#    echo Vocẽ escolheu não sincronir no momento. 
+#fi
 
 if [ ! -e $enderecoHD ]; then
     sudo mkdir -p $enderecoHD
