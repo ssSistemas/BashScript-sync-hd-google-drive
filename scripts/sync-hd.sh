@@ -62,7 +62,7 @@ echo Pasta montada o google drive:"$enderecoDriver"
 echo ============================================================================================
 
 echo ===========================================================================================
-echo Deseja sincronizar o HD e Google Drive, é aconelhado fazer isso pelo menos UMA vez ao dia.
+echo Deseja sincronizar o HD e Google Drive.
 echo Caso deseje digite: s
 read input
 echo ===========================================================================================
