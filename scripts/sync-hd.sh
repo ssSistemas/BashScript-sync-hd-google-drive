@@ -4,32 +4,36 @@
 #função para sincronizar hd e google drive
 sincronizarHD() {
     sleep 30
-
-
-        if ! ps -aux | grep -q '[r]clone copy'; then
-            nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
-
-        else
-            
-            break
-        fi
-
-
+    
+    
+    if ! ps -aux | grep -q '[r]clone copy'; then
+        nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+        echo Iniciando sincronização
+        
+        sleep 30
+        
+        while [ "a" = "a" ]
+        do
+            if ! ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
+                nice -n 15 bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
+                break
+            else
+                sleep 300
+            fi
+        done
+        
+        
+    else
+        echo Já haviar uma sincronização em processamento.
+        
+    fi
     
     
     
     
-    sleep 30
     
-    while [ "a" = "a" ]
-    do
-        if ! ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
-            nice -n 15 bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
-            break
-        else
-            sleep 300
-        fi
-    done
+    
+    
 }
 
 # Verificar se o script está sendo executado com o Bash
@@ -72,11 +76,11 @@ echo Configuração acesso rclone para google drive:"$servidorRclone"
 echo Pasta montada o google drive:"$enderecoDriver"
 echo ============================================================================================
 
-echo ===========================================================================================
-echo Deseja sincronizar o HD e Google Drive.
-echo Caso deseje digite: s
-read input
-echo ===========================================================================================
+#echo ===========================================================================================
+#echo Deseja sincronizar o HD e Google Drive.
+#echo Caso deseje digite: s
+#read input
+#echo ===========================================================================================
 
 sincroHD=1
 
@@ -84,7 +88,7 @@ sincroHD=1
 #    sincroHD=1
 #    echo Sincronização será iniciada após o completo carregamento do sync-hd iniciada.
 #else
-#    echo Vocẽ escolheu não sincronir no momento. 
+#    echo Vocẽ escolheu não sincronir no momento.
 #fi
 
 if [ ! -e $enderecoHD ]; then
@@ -161,7 +165,7 @@ sleep 5
 
 if [ "$sincroHD" -eq 1 ]; then
     sincronizarHD &
-
+    
 fi
 
 
