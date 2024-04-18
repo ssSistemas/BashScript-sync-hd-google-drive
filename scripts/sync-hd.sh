@@ -139,6 +139,8 @@ do
     
     if [ "$(ls -A $enderecoDriver)" ]; then
         echo "Google drive Montado com sucesso!"
+        echo "Ativando a criptografia"
+        ecryptfs-mount-private
         break
     else
         echo "Erro ao montar GOOGLE DRIVE"
@@ -182,6 +184,7 @@ monitorRodando=$(ps -aux | grep inotifywait | grep "$pastahd")
 
 if [ -n "$monitorRodando" ]; then
     echo monitoramento ativado com sucesso.
+    
 else
     echo inotifywait não inicializado corretamente!
     echo Verifique o problema, não será possível iniciar o google drive com monitoramento ativo então,
