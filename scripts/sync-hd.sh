@@ -189,6 +189,8 @@ else
     echo inotifywait não inicializado corretamente!
     echo Verifique o problema, não será possível iniciar o google drive com monitoramento ativo então,
     echo Será desmontado o Google Drive e também o HD local!
+    ecryptfs-umount-private
     sudo umount $enderecoHD
     sudo umount $enderecoDriver
+    
 fi
