@@ -245,16 +245,19 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                         
                                         echo Arquivo copiado, não existia no destino.
                                     else
-                                        echo Calculando Hashs
-                                        hash1=$(md5sum "$arquivo" | awk '{print $1}')
-                                        hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
-                                        if [ "$hash1" == "$hash2" ]; then
-                                            echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
-                                            echo "$hash1" = "$hash2"
-                                        else
-                                            echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.
-                                            if [ "$arquivo" -nt "$completo_caminho" ]; then
-                                                echo Copia necessaria de arquivo, iniciando!!
+
+                                        if [ "$arquivo" -nt "$completo_caminho" ]; then
+
+                                            
+                                            echo Calculando Hashs
+                                            hash1=$(md5sum "$arquivo" | awk '{print $1}')
+                                            hash2=$(md5sum "$completo_caminho" | awk '{print $1}')
+                                        
+                                            
+                                           
+                                            if [ "$hash1" != "$hash2" ]; then
+
+                                                echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.z       
                                                 
                                                 if [ "$ativarSimulacao" -eq 1 ];then
                                                     echo rsync -a --protect-args "$arquivo" "$completo_caminho"
@@ -262,7 +265,8 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                                     rsync -a --protect-args "$arquivo" "$completo_caminho"
                                                 fi
                                             else
-                                                echo Não necessário a copia pois o destino é mais atual!
+                                                echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
+
                                             fi
                                         fi
                                     fi
