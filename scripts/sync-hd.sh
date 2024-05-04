@@ -97,7 +97,7 @@ echo ===========================================================================
 #read input
 #echo ===========================================================================================
 
-sincroHD=0
+sincroHD=1
 
 #if [ "$input" = "s" ]; then
 #    sincroHD=1
@@ -156,8 +156,7 @@ do
     
     if [ "$(ls -A $enderecoDriver)" ]; then
         echo "Google drive Montado com sucesso!"
-        echo "Ativando a criptografia"
-        ecryptfs-mount-private
+
         break
     else
         echo "Erro ao montar GOOGLE DRIVE"
@@ -206,7 +205,7 @@ else
     echo inotifywait não inicializado corretamente!
     echo Verifique o problema, não será possível iniciar o google drive com monitoramento ativo então,
     echo Será desmontado o Google Drive e também o HD local!
-    ecryptfs-umount-private
+
     sudo umount $enderecoHD
     sudo umount $enderecoDriver
     
