@@ -16,6 +16,24 @@ if [ $? -eq 0 ]; then
     sudo chmod +x /usr/bin/sync-config.sh
     
     
+
+
+     if ! dpkg -l | grep -qw inotify-tools ; then
+        echo "inotifywait não está instalado. Tentando instalar..."
+        
+        
+        sudo apt-get update
+        
+        
+        if sudo apt-get install -y inotify-tools; then
+            echo "inotify-tools instalado com sucesso."
+        else
+            echo "Não foi possível encontrar o pacote inotify-tools nos repositórios padrão."
+            echo "Você pode tentar instalar 'inotify-tools' como uma alternativa ou procurar um pacote '.deb' do pdftk online."
+        fi
+    fi
+
+
     
     if ! dpkg -l | grep -qw cpulimit; then
         echo "cpulimit não está instalado. Tentando instalar..."

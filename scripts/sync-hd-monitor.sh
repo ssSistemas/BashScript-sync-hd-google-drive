@@ -28,7 +28,7 @@ endLixeira="$pasta_destino/$lixeira"
 nomePasta=$pastahd
 
 if [ ! -n "$(ls -A $enderecoHD)" ]; then
-    echo "Erro partição local não montada, execute primeiramente o script sync-hd.sh"
+    echo "Erro ao acessar arquivos, execute primeiramente o script sync-hd.sh"
     echo "tente novamente"
     exit 1
 fi
@@ -79,7 +79,7 @@ echo "Nome da pasta montada a partição local:$nomePasta"
 
 Rodar=1
 deletePermanente=0
-ativarSimulacao=0
+ativarSimulacao=1
 
 #inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
 inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do

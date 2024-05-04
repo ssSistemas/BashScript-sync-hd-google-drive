@@ -65,15 +65,30 @@ else
     exit 1
 fi
 
+if [ -n "$enderecoFisico"  ]; then
+        enderecoFisicoAtivado=1
+    else    
+        enderecoFisicoAtivado=0
+fi 
 
 pastahd=$(echo "$enderecoHD" | grep -oP '[0-9a-f-]+$')
 
 echo ============================================================================================
-echo Endereço físico da partição:"$enderecoFisico"
-echo Endereço da pasta a ser montada a partição local:"$enderecoHD"
-echo Nome da pasta montada a partição local:"$pastahd"
-echo Configuração acesso rclone para google drive:"$servidorRclone"
-echo Pasta montada o google drive:"$enderecoDriver"
+if [ "$enderecoFisicoAtivado" -eq 1 ]; then
+    echo Endereço físico da partição:"$enderecoFisico"
+    echo Endereço da pasta a ser montada a partição local:"$enderecoHD"
+    echo Nome da pasta montada a partição local:"$pastahd"
+    echo Configuração acesso rclone para google drive:"$servidorRclone"
+    echo Pasta do google drive montada em:"$enderecoDriver"
+
+else
+    
+    echo Endereço da pasta dos arquivos monitorados:"$enderecoHD"
+    echo Configuração acesso rclone para google drive:"$servidorRclone"
+    echo Pasta do google drive montada em:"$enderecoDriver"
+fi
+
+
 echo ============================================================================================
 
 #echo ===========================================================================================
@@ -82,7 +97,7 @@ echo ===========================================================================
 #read input
 #echo ===========================================================================================
 
-sincroHD=1
+sincroHD=0
 
 #if [ "$input" = "s" ]; then
 #    sincroHD=1
@@ -115,15 +130,17 @@ if [ ! $? -eq 0 ]; then
 fi
 
 
+if [ "$enderecoFisicoAtivado" -eq 1 ]; then
+    sudo mount -o rw,nosuid,nodev,relatime,errors=remount-ro,uhelper=udisks2 "$enderecoFisico" "$enderecoHD" &
 
-sudo mount -o rw,nosuid,nodev,relatime,errors=remount-ro,uhelper=udisks2 "$enderecoFisico" "$enderecoHD" &
+fi 
 
 sleep 5
 
 if [ -n "$(ls -A $enderecoHD)" ]; then
-    echo "Partição local montada com sucesso"
+    echo "Arquivos locais acessados com exito"
 else
-    echo "Erro ao montar partição local, não podemos continuar o processo de montar o google drive e ativar o monitoramento!"
+    echo "Erro ao acessar arquivos locais, não podemos continuar o processo de monitoramento!"
     echo "Tente novamente"
     exit 1
 fi

@@ -45,7 +45,7 @@ if [ $? -eq 0 ]; then
 
 
     echo "***********************************"
-    echo Configurar a pasta para montar diretorio remoto
+    echo Configurar a pasta para montar o diretorio remoto
     echo "***********************************"
     echo "Entre com o endereço completo da pasta para montar diretorio remoto"
     echo "=============================================="
@@ -53,33 +53,74 @@ if [ $? -eq 0 ]; then
     echo "=============================================="
     read input
     sudo bash -c "echo enderecoDriver=\"$input\" >> /etc/sync-hd/monitor.conf"
-    echo "***********************************"
-    echo Configurando o endereço fisico da sua partição
-    echo "***********************************"
 
-    echo segue a tabela de partição para consulta.
-    echo "********************************************************"
-    sudo fdisk -l | more
-    echo "********************************************************"
+    echo Os arquivos a serem monitorados estão na partição raiz / ?
+    echo Para confirmar digite: s
+    read input
+
+        if [  "$input" = "s" ];then
+            montarParticao=0
+        else   
+            montarParticao=1
+        fi
+
+        if [ "$montarParticao" -eq 1 ]; then
+            echo "***********************************"
+            echo Configurando o endereço fisico da sua partição
+            echo Como você informou que seus arquivos não estão na partição / será necessario montar
+            echo suas partição em uma pastas
+            echo "***********************************"
+            echo segue a tabela de partição para consulta.
+            echo "********************************************************"
+            sudo fdisk -l | more
+            echo "********************************************************"
+            echo "Entre com o endereço físico da sua partição local"
+            echo "=============================================="
+            echo "exemplo: /dev/sda3"
+            echo "=============================================="
+            read input
+            sudo bash -c "echo enderecoFisico=\"$input\" >> /etc/sync-hd/monitor.conf"
+
+            echo "******************************************************************"   
+            echo "Entre com endereço de pasta montar sua partição."
+            echo "=============================================="
+            echo "exemplo: /media/meuhd"
+            echo "=============================================="
+        else    
+            sudo bash -c "echo enderecoFisico= >> /etc/sync-hd/monitor.conf"
+            echo "******************************************************************"   
+            echo "Entre com endereço de pasta que deseja MONITORAR."
+            echo "=============================================="
+            echo "exemplo: /home/usuario/meusArquivos"
+            echo "=============================================="
+
+        fi
+
+
+
+
+    read input 
     var1=$(echo -n $RANDOM | sha256sum | cut -c1-16)
 
-    echo "Entre com o endereço físico da sua partição local"
-    echo "=============================================="
-    echo "exemplo: /dev/sda3"
-    echo "=============================================="
-    read input
-    sudo bash -c "echo enderecoFisico=\"$input\" >> /etc/sync-hd/monitor.conf"
-    echo "******************************************************************"
-    echo "Entre com endereço de pasta que deseja montar sua partição."
-    echo "=============================================="
-    echo "exemplo: /media/meuhd"
-    echo "=============================================="
-    read input
-    input="$input"/"$var1"
+        if [ "$montarParticao" -eq 1 ]; then
+            input="$input"/"$var1"
+                echo "=============================================="
+                echo "Sua partição interna será montada em $input"
+                echo "=============================================="
+        else
+            sudo ln -sfn "$input" /home/"$var1"
+            input=/home/"$var1"
+                echo "=============================================="
+                echo "Você deve acessar seuas arquivo pelo link $input"
+                echo "=============================================="
+        fi
+
     sudo bash -c "echo enderecoHD=\"$input\" >> /etc/sync-hd/monitor.conf"
-    echo "=============================================="
-    echo "Sua partição interna será montada em $input"
-    echo "=============================================="
+
+    
+
+    
+    
     echo "***************************************************"
     echo Programa instalado e configurado
     echo "====================================================================="
