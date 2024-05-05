@@ -78,7 +78,7 @@ echo "Nome da pasta montada a partição local:$nomePasta"
 
 
 Rodar=1
-deletePermanente=0
+deletePermanente=1
 ativarSimulacao=0
 
 #inotifywait -e move -e modify -e delete -m "$pasta_origem" -r --format "%e %w%f" | while read -r evento arquivo; do
@@ -247,7 +247,7 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                     else
 
                                         if [ "$arquivo" -nt "$completo_caminho" ]; then
-
+                                            echo Os arquivos tem datas de modificacoes diferentes.
                                             
                                             echo Calculando Hashs
                                             hash1=$(md5sum "$arquivo" | awk '{print $1}')
@@ -256,8 +256,8 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                             
                                            
                                             if [ "$hash1" != "$hash2" ]; then
-
-                                                echo hash não são iguais, === Arquivo será copiado caso a arquivo de origem for mais recente que destino.z       
+                                                echo Verificando se arquivos sao iguais atraves de calculo de Hash
+                                                echo hash não são iguais, === Arquivo será copiado!       
                                                 
                                                 if [ "$ativarSimulacao" -eq 1 ];then
                                                     echo rsync -a --protect-args "$arquivo" "$completo_caminho"
@@ -268,11 +268,16 @@ inotifywait -e move -e create -e modify -e delete -m "$pasta_origem" -r --format
                                                 echo Não necessário realizar copia pois os arquivos são iguais, provados pelo md5sum
 
                                             fi
+                                        else    
+                                            echo Não é necessário nenhum ação as datas de modificações são iguais.
+
                                         fi
+
                                     fi
                                 else
                                     echo Precisa verificar não foi encontrado o arquivo na origem: "$arquivo".
                                 fi
+                                echo "----------------------------------------------------"
                             fi
                         fi
                     fi
