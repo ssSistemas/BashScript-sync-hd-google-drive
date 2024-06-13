@@ -16,7 +16,21 @@ if [ $? -eq 0 ]; then
     sudo chmod +x /usr/bin/sync-config.sh
     
     
-
+    if ! dpkg -l | grep -qw rclone ; then
+        echo "rclone não está instalado. Tentando instalar..."
+        
+        
+        curl https://rclone.org/install.sh | sudo bash
+        
+        
+        if dpkg -l | grep -qw rclone ; then
+            echo "rclone instalado com sucesso."
+        else
+            echo "Não foi possível encontrar o pacote rclone."
+            echo "Instale manualmente, e depois volte na instalação do sync-hd"
+            exit 1
+        fi
+    fi
 
      if ! dpkg -l | grep -qw inotify-tools ; then
         echo "inotifywait não está instalado. Tentando instalar..."
