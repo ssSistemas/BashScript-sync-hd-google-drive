@@ -19,11 +19,9 @@ if [ $? -eq 0 ]; then
     if ! dpkg -l | grep -qw rclone ; then
         echo "rclone não está instalado. Tentando instalar..."
         
+                
         
-        curl https://rclone.org/install.sh | sudo bash
-        
-        
-        if dpkg -l | grep -qw rclone ; then
+        if sudo apt-get -y install rclone ; then
             echo "rclone instalado com sucesso."
         else
             echo "Não foi possível encontrar o pacote rclone."
