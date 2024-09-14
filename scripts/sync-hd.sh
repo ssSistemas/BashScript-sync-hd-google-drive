@@ -14,11 +14,11 @@ sincronizarHD() {
         
         while [ "a" = "a" ]
         do
-            if ! ps -aux | grep -q '[r]clone copy --transfers 2 --checkers 3 --checksum --update'; then
-                nice -n 15 bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
+            if ! ps -aux | grep -q '[r]clone copy'; then
+                bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
                 break
             else
-                sleep 300
+                sleep 30
             fi
         done
         
