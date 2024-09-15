@@ -7,20 +7,21 @@ sincronizarHD() {
     
     
     if ! ps -aux | grep -q '[r]clone copy'; then
-        nice -n 15 bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
-        echo Iniciando sincronização
+        bash sync-copiarTodoDriver.sh > /dev/null 2>&1 &
+        echo Iniciando copia arquivos para googledrive
         
-        sleep 30
+        sleep 600
         
-        while [ "a" = "a" ]
-        do
-            if ! ps -aux | grep -q '[r]clone copy'; then
+       # while [ "a" = "a" ]
+       # do
+       #     if ! ps -aux | grep -q '[r]clone copy'; then
+                echo Iniciando copia googledrive para hd
                 bash sync-atualizarTodoDriver.sh > /dev/null 2>&1 &
-                break
-            else
-                sleep 30
-            fi
-        done
+                # break
+       #     else
+       #         sleep 30
+       #     fi
+       # done
         
         
     else
